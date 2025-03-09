@@ -3,6 +3,7 @@
     <!-- Header -->
     <div class="header">
       <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
+      <h1 class="title">made With ❤️ By Aris</h1>
       <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
     </div>
 
