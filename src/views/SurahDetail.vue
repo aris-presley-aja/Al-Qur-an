@@ -16,6 +16,8 @@
     <!-- Data Success -->
     <div v-else-if="surah" class="surah-content">
       <!-- Header -->
+      <button class="home-button" onclick="window.location.href='https://al-qur-an-lyart.vercel.app/'">
+        Kembali
       <div class="surah-header">
         <h1 class="arabic">{{ surah.nama }}</h1>
         <h2>{{ surah.nama_latin }} ({{ surah.arti }})</h2>
@@ -398,5 +400,21 @@ onUnmounted(() => {
     width: 35px;
     height: 35px;
   }
+/*  */
+.home-button {
+      background-color: #4CAF50; /* Warna hijau */
+      color: white; /* Warna teks putih */
+      padding: 10px 20px; /* Padding atas-bawah 10px, kiri-kanan 20px */
+      border: none; /* Hilangkan border */
+      border-radius: 5px; /* Sudut tombol melengkung */
+      font-size: 16px; /* Ukuran font */
+      cursor: pointer; /* Ubah kursor saat diarahkan ke tombol */
+      transition: background-color 0.3s ease; /* Animasi perubahan warna */
+    }
+
+    .home-button:hover {
+      background-color: #45a049; /* Warna hijau lebih gelap saat hover */
+    }
+/*  */
 }
 </style>
