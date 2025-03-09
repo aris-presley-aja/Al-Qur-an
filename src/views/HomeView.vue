@@ -4,7 +4,7 @@
     <div class="header">
       <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
       <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
-      <h1 class="">made With ❤️ By Aris</h1>
+      <h1 class="small-text">made With ❤️ By Aris</h1>
     </div>
 
     <!-- Loading State -->
@@ -276,5 +276,10 @@ onMounted(fetchSurahs)
   .surah-card {
     padding: 1rem;
   }
+  .small-text {
+      font-size: 12px; /* Ukuran font kecil */
+      font-weight: normal; /* Tidak tebal */
+      margin: 0; /* Hilangkan margin default */
+    }
 }
 </style>
