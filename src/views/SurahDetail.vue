@@ -15,10 +15,7 @@
 
     <!-- Data Success -->
     <div v-else-if="surah" class="surah-content">
-      <!-- Header -->
-      <button class="home-button" @click="$router.push('/')">
-  Kembali
-</button>
+      <button class="home-button" @click="goHome">Kembali</button>
       <div class="surah-header">
         <h1 class="arabic">{{ surah.nama }}</h1>
         <h2>{{ surah.nama_latin }} ({{ surah.arti }})</h2>
@@ -28,7 +25,7 @@
         </div>
       </div>
 
-      <!-- Full Surah Player Controls -->
+      <!-- Player Controls -->
       <div class="full-player">
         <div class="player-controls">
           <button @click="togglePlayAll" :class="{ playing: isPlayingAll }" class="play-all-btn">
@@ -36,9 +33,6 @@
             {{ isPlayingAll ? '⏸ Jeda' : '▶ Putar Semua' }}
           </button>
           <button @click="stopAll" class="stop-btn"><i class="fas fa-stop"></i> ⏹ Berhenti</button>
-          <!-- <span v-if="isPlayingAll" class="current-ayah">
-            Sedang Memutar Ayat {{ currentAyahIndex + 1 }} dari {{ surah.jumlah_ayat }}
-          </span> -->
         </div>
       </div>
 
@@ -67,145 +61,84 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 
 const route = useRoute()
+const router = useRouter()
 const surah = ref(null)
 const loading = ref(true)
 const error = ref(null)
-const currentAyahIndex = ref(-1) // Indeks ayat yang sedang diputar
-const isPlayingAll = ref(false) // Status pemutaran keseluruhan surah
-let audioElement = null // Objek audio
+const currentAyahIndex = ref(-1)
+const isPlayingAll = ref(false)
+let audioContext = null
+let audioElement = null
+let sourceNode = null
 
-// Base URL untuk audio
 const baseAudioUrl = 'https://santrikoding.com/storage/audio/'
 
-// Fetch surah data
 const fetchSurah = async () => {
   try {
     loading.value = true
     error.value = null
-
-    if (!route.params.nomor || isNaN(route.params.nomor)) {
-      throw new Error('Nomor surah tidak valid')
-    }
-
     const response = await axios.get(
       `https://quran-api.santrikoding.com/api/surah/${route.params.nomor}`,
     )
-
-    if (!response.data) {
-      throw new Error('Data tidak ditemukan')
-    }
-
     surah.value = response.data
   } catch (err) {
-    handleError(err)
+    error.value = err.message || 'Terjadi kesalahan. Silakan coba lagi.'
   } finally {
     loading.value = false
   }
 }
 
-// Handle errors
-const handleError = (err) => {
-  error.value =
-    err.response?.data?.message ||
-    err.message ||
-    'Terjadi kesalahan. Silakan coba beberapa saat lagi.'
-  console.error('Error details:', err)
-}
-
-// Generate audio URL berdasarkan nomor surah
 const generateAudioUrl = (nomorSurah) => {
-  const surahNumber = String(nomorSurah).padStart(3, '0') // Format 3 digit (001, 002, ...)
-  return `${baseAudioUrl}${surahNumber}.mp3` // Format URL: https://santrikoding.com/storage/audio/001.mp3
+  return `${baseAudioUrl}${String(nomorSurah).padStart(3, '0')}.mp3`
 }
 
-// Toggle play all
+const playAll = () => {
+  isPlayingAll.value = true
+  currentAyahIndex.value = 0
+
+  audioElement = new Audio(generateAudioUrl(route.params.nomor))
+  audioElement.play()
+
+  audioElement.addEventListener('timeupdate', () => {
+    if (surah.value) {
+      const totalDuration = audioElement.duration
+      const ayatCount = surah.value.ayat.length
+      const ayatDuration = totalDuration / ayatCount
+      currentAyahIndex.value = Math.floor(audioElement.currentTime / ayatDuration)
+    }
+  })
+
+  audioElement.addEventListener('ended', stopAll)
+}
+
 const togglePlayAll = () => {
   if (isPlayingAll.value) {
-    pauseAll()
+    audioElement.pause()
+    isPlayingAll.value = false
   } else {
     playAll()
   }
 }
 
-// Play all ayahs
-const playAll = () => {
-  if (currentAyahIndex.value >= surah.value.ayat.length - 1) {
-    currentAyahIndex.value = -1
-  }
-
-  isPlayingAll.value = true
-  currentAyahIndex.value = currentAyahIndex.value === -1 ? 0 : currentAyahIndex.value
-
-  // Generate URL audio
-  const nomorSurah = route.params.nomor
-  const audioUrl = generateAudioUrl(nomorSurah)
-
-  // Buat objek Audio baru
-  audioElement = new Audio(audioUrl)
-
-  // Mulai memutar audio
-  audioElement
-    .play()
-    .then(() => {
-      console.log('Audio berhasil diputar')
-    })
-    .catch((err) => {
-      console.error('Gagal memutar audio:', err)
-      isPlayingAll.value = false
-      currentAyahIndex.value = -1
-      alert('Gagal memutar audio. Pastikan URL audio valid dan dapat diakses.')
-    })
-
-  // Hitung durasi per ayat
-  const totalDuration = audioElement.duration
-  const ayatCount = surah.value.ayat.length
-  const ayatDuration = totalDuration / ayatCount
-
-  // Update currentAyahIndex berdasarkan progres pemutaran
-  audioElement.addEventListener('timeupdate', () => {
-    const currentTime = audioElement.currentTime
-    const newIndex = Math.floor(currentTime / ayatDuration)
-    if (newIndex !== currentAyahIndex.value) {
-      currentAyahIndex.value = newIndex
-    }
-  })
-
-  // Saat audio selesai, hentikan pemutaran
-  audioElement.addEventListener('ended', () => {
-    stopAll()
-  })
-}
-
-// Pause all
-const pauseAll = () => {
-  isPlayingAll.value = false
-  if (audioElement) {
-    audioElement.pause()
-  }
-}
-
-// Stop all
 const stopAll = () => {
-  isPlayingAll.value = false
-  currentAyahIndex.value = -1
   if (audioElement) {
     audioElement.pause()
     audioElement = null
   }
+  isPlayingAll.value = false
+  currentAyahIndex.value = -1
 }
 
-// Lifecycle hooks
-onMounted(() => {
-  fetchSurah()
-})
+const goHome = () => {
+  router.push('/')
+}
 
-onUnmounted(() => {
-  stopAll()
-})
+onMounted(fetchSurah)
+onUnmounted(stopAll)
 </script>
 <style scoped>
 /* Global Styles */
@@ -401,21 +334,21 @@ onUnmounted(() => {
     width: 35px;
     height: 35px;
   }
-/*  */
-.home-button {
-      background-color: #4CAF50; /* Warna hijau */
-      color: white; /* Warna teks putih */
-      padding: 10px 20px; /* Padding atas-bawah 10px, kiri-kanan 20px */
-      border: none; /* Hilangkan border */
-      border-radius: 5px; /* Sudut tombol melengkung */
-      font-size: 16px; /* Ukuran font */
-      cursor: pointer; /* Ubah kursor saat diarahkan ke tombol */
-      transition: background-color 0.3s ease; /* Animasi perubahan warna */
-    }
+  /*  */
+  .home-button {
+    background-color: #4caf50; /* Warna hijau */
+    color: white; /* Warna teks putih */
+    padding: 10px 20px; /* Padding atas-bawah 10px, kiri-kanan 20px */
+    border: none; /* Hilangkan border */
+    border-radius: 5px; /* Sudut tombol melengkung */
+    font-size: 16px; /* Ukuran font */
+    cursor: pointer; /* Ubah kursor saat diarahkan ke tombol */
+    transition: background-color 0.3s ease; /* Animasi perubahan warna */
+  }
 
-    .home-button:hover {
-      background-color: #45a049; /* Warna hijau lebih gelap saat hover */
-    }
-/*  */
+  .home-button:hover {
+    background-color: #45a049; /* Warna hijau lebih gelap saat hover */
+  }
+  /*  */
 }
 </style>
