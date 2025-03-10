@@ -2,10 +2,10 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-    <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
-    <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
-    <span class="small-text">made With ❤️ By:Aris-G12722002</span>
-  </div>
+      <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
+      <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
+      <span class="small-text">made With ❤️ By:Aris-G12722002</span>
+    </div>
 
     <!-- Loading State -->
     <div v-if="loading" class="loading">
@@ -94,6 +94,15 @@ onMounted(fetchSurahs)
   font-family: 'Poppins', sans-serif;
   color: #666;
   font-size: 1.1rem;
+}
+
+/* Gaya untuk teks kecil */
+.small-text {
+  font-size: 12px; /* Ukuran font kecil */
+  color: #888; /* Warna teks */
+  margin: 0; /* Hilangkan margin default */
+  font-weight: normal; /* Tidak tebal */
+  text-decoration: underline; /* Garis bawah */
 }
 
 /* Loading State */
@@ -276,36 +285,5 @@ onMounted(fetchSurahs)
   .surah-card {
     padding: 1rem;
   }
- /* */ 
-/* Gaya untuk header */
-.header {
-      text-align: center; /* Pusatkan teks */
-      padding: 20px;
-      background-color: #f4f4f4; /* Warna latar belakang */
-      border-bottom: 1px solid #ddd; /* Garis bawah */
-    }
-
-    /* Gaya untuk judul utama */
-    .title {
-      font-size: 24px; /* Ukuran font judul */
-      margin-bottom: 10px; /* Jarak bawah */
-    }
-
-    /* Gaya untuk subjudul */
-    .subtitle {
-      font-size: 16px; /* Ukuran font subjudul */
-      color: #666; /* Warna teks */
-      margin-bottom: 20px; /* Jarak bawah */
-    }
-
-    /* Gaya untuk teks kecil */
-    .small-text {
-  font-size: 12px; /* Ukuran font kecil */
-  color: #888; /* Warna teks */
-  margin: 0; /* Hilangkan margin default */
-  font-weight: normal; /* Tidak tebal */
-  text-decoration: underline; /* Garis bawah */
-}
- /*  */
 }
 </style>
