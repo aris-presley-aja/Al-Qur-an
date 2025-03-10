@@ -4,8 +4,8 @@
     <div class="header">
     <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
     <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
-    <h6 class="small-text">made With ❤️ By Aris-G12722002</h6>
-      <u class="small-text">made With ❤️ By Aris-G12722002</u>
+    <!-- <h6 class="small-text">made With ❤️ By Aris-G12722002</h6> -->
+      <u class="small-text">made With ❤️ By:Aris-G12722002</u>
   </div>
 
     <!-- Loading State -->
