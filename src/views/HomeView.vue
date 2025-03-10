@@ -4,7 +4,8 @@
     <div class="header">
     <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
     <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
-    <h1 class="small-text">made With ❤️ By Aris-G12722002</h1>
+    <h6 class="small-text">made With ❤️ By Aris-G12722002</h6>
+      <u class="small-text">made With ❤️ By Aris-G12722002</u>
   </div>
 
     <!-- Loading State -->
@@ -303,7 +304,7 @@ onMounted(fetchSurahs)
       font-size: 6px; /* Ukuran font paling kecil */
       color: #888; /* Warna teks */
       margin: 0; /* Hilangkan margin default */
-      font-weight: normal; /* Tidak tebal */
+      font-weight: light; /* Tidak tebal */
     }
  /*  */
 }
