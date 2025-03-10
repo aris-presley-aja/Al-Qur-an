@@ -16,8 +16,9 @@
     <!-- Data Success -->
     <div v-else-if="surah" class="surah-content">
       <!-- Header -->
-      <button class="home-button" onclick="window.location.href='https://al-qur-an-lyart.vercel.app/'">
-        Kembali</button>
+      <button class="home-button" @click="$router.push('/')">
+  Kembali
+</button>
       <div class="surah-header">
         <h1 class="arabic">{{ surah.nama }}</h1>
         <h2>{{ surah.nama_latin }} ({{ surah.arti }})</h2>
