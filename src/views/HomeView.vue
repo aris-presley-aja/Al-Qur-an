@@ -4,7 +4,7 @@
     <div class="header">
       <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
       <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
-      <span class="surah-details"><h6>made With ❤️ By:Aris-G12722002</h6></span>
+      <span class="small-text">made With ❤️ By:Aris-G12722002</span>
     </div>
 
     <!-- Loading State -->
@@ -96,16 +96,14 @@ onMounted(fetchSurahs)
   font-size: 1.1rem;
 }
 
-/* Gaya untuk teks kecil */
 .small-text {
-  font-size: 12px; /* Ukuran font kecil */
-  color: #888; /* Warna teks */
-  margin: 0; /* Hilangkan margin default */
-  font-weight: normal; /* Tidak tebal */
-  text-decoration: underline; /* Garis bawah */
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  font-weight: normal;
+  text-decoration: underline;
 }
 
-/* Loading State */
 .loading {
   display: flex;
   flex-direction: column;
@@ -138,7 +136,6 @@ onMounted(fetchSurahs)
   font-size: 1.2rem;
 }
 
-/* Error State */
 .error-card {
   background: #fff0f0;
   border: 1px solid #ffcccc;
@@ -190,7 +187,6 @@ onMounted(fetchSurahs)
   transform: translateY(-2px);
 }
 
-/* Surah Grid */
 .surah-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
