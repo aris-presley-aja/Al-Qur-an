@@ -1,71 +1,73 @@
 <template>
   <div class="container">
-    <!-- Header -->
     <div class="header">
       <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
       <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
-      <span class="small-text">made With ❤️ By:Aris-G12722002</span>
+      <input
+        v-model="searchQuery"
+        @input="filterSurahs"
+        type="text"
+        placeholder="Cari surah berdasarkan nama atau nomor..."
+        class="search-input"
+      />
     </div>
 
-    <!-- Loading State -->
     <div v-if="loading" class="loading">
-      <div class="spinner"></div>
       <p class="loading-text">Memuat Daftar Surah...</p>
     </div>
 
-    <!-- Error State -->
     <div v-else-if="error" class="error-card">
-      <div class="error-content">
-        <span class="error-icon">⚠️</span>
-        <div>
-          <h3 class="error-title">Gagal Memuat Data</h3>
-          <p class="error-message">{{ error }}</p>
-        </div>
-      </div>
-      <button @click="fetchSurahs" class="retry-btn">🔄 Muat Ulang</button>
+      <p class="error-message">{{ error }}</p>
+      <button @click="fetchSurahs">🔄 Muat Ulang</button>
     </div>
 
-    <!-- Surah List -->
     <div v-else class="surah-grid">
       <router-link
-        v-for="surah in surahs"
-        :key="surah.number"
-        :to="`/surah/${surah.number}`"
+        v-for="surah in filteredSurahs"
+        :key="surah.nomor"
+        :to="`/surah/${surah.nomor}`"
         class="surah-card"
       >
-        <div class="surah-number">{{ surah.number }}</div>
+        <div class="surah-number">{{ surah.nomor }}</div>
         <div class="surah-content">
-          <h2 class="surah-name">{{ surah.englishName }}</h2>
-          <p class="surah-details">
-            {{ surah.englishNameTranslation }}
-            <span class="ayah-count">• {{ surah.numberOfAyahs }} Ayat</span>
-          </p>
+          <h2 class="surah-name">{{ surah.nama_latin }}</h2>
+          <p class="surah-details">{{ surah.arti }} • {{ surah.jumlah_ayat }} Ayat</p>
         </div>
-        <div class="surah-icon">⌖</div>
       </router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 
 const surahs = ref([])
+const filteredSurahs = ref([])
 const loading = ref(true)
 const error = ref(null)
+const searchQuery = ref('')
 
 const fetchSurahs = async () => {
   try {
     loading.value = true
-    const response = await axios.get('https://api.alquran.cloud/v1/surah')
-    surahs.value = response.data.data
+    const response = await axios.get('https://quran-api.santrikoding.com/api/surah')
+    surahs.value = response.data
+    filteredSurahs.value = response.data
     error.value = null
   } catch (err) {
     error.value = 'Gagal memuat data. Silakan coba lagi.'
   } finally {
     loading.value = false
   }
+}
+
+const filterSurahs = () => {
+  const query = searchQuery.value.toLowerCase()
+  filteredSurahs.value = surahs.value.filter(
+    (surah) =>
+      surah.nama_latin.toLowerCase().includes(query) || surah.nomor.toString().includes(query),
+  )
 }
 
 onMounted(fetchSurahs)
@@ -280,6 +282,14 @@ onMounted(fetchSurahs)
 
   .surah-card {
     padding: 1rem;
+  }
+  .search-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
   }
 }
 </style>
