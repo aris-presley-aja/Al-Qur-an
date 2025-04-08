@@ -2,6 +2,9 @@
   <div class="container">
     <div class="header">
       <h1 class="title">📖 Daftar Surah Al-Qur'an</h1>
+      <div class="about tiny-text">
+    <h6>made with ♥️ By Aris Priyanto</h6>
+  </div>
       <p class="subtitle">Pilih surah untuk melihat detail ayat</p>
       <input
         v-model="searchQuery"
@@ -290,6 +293,18 @@ onMounted(fetchSurahs)
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+  }
+  @media (min-width: 1024px) {
+  .about {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+}
+.tiny-text {
+    font-size: 6px;
+    margin: 0;
+    padding: 0;
   }
 }
 </style>
